@@ -7,30 +7,19 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\Api\UserManagementController;
 use App\Http\Controllers\Api\SpreadsheetController;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/master
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-<<<<<<< HEAD
 //Route pages
-=======
->>>>>>> origin/master
 Route::prefix('auth')->middleware(['web'])->group(function () {
     Route::post('/register-user', [AuthController::class, 'registerUser'])->name('api.register-user');
     Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('api.authenticate');
     Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('api.showRegistrationForm');
-<<<<<<< HEAD
     Route::post('/check-email', [AuthController::class, 'checkEmail'])->name('api.check-email'); // New route for checking email
     Route::post('/check-username', [AuthController::class, 'checkUsername'])->name('api.check-username');
 
 
-=======
-    Route::post('/register', [AuthController::class, 'registerUser'])->name('api.register');
->>>>>>> origin/master
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -45,10 +34,7 @@ Route::get('/public-route', function () {
 });
 
 
-<<<<<<< HEAD
 //user Mangement Routes
-=======
->>>>>>> origin/master
 Route::middleware('auth:sanctum')->prefix('admin')->group(function(){
     Route::post('/saveUser', [UserManagementController::class, 'saveUser'])->name('api.admin.saveUser');
     Route::get('/admin/user/{id}', [UserManagementController::class, 'getEditUserData'])->name('api.admin.getEditUserData');
@@ -59,10 +45,5 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function(){
     Route::post('/users/import', [SpreadSheetController::class, 'importUsers'])->name('api.admin.importUsers');
     Route::get('/users/export', [SpreadSheetController::class, 'exportUsers'])->name('api.admin.exportUsers');
 });
-<<<<<<< HEAD
-
-=======
-;
->>>>>>> origin/master
 
 

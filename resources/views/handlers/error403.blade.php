@@ -1,16 +1,12 @@
-<<<<<<< HEAD
 @php
     $previousUrl = url()->previous();
 @endphp
 
-=======
->>>>>>> origin/master
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
     <title>Error 403 - Access Denied</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/error403.css') }}">
@@ -50,18 +46,5 @@
     </div>
 
     <script src="{{ asset('js/error403.js') }}"></script>
-=======
-    <title>403 Error</title>
-    <link rel="stylesheet" href="../../css/error403.css"> 
-</head>
-<body>
-    <div class="error-403-container">
-        <img src="{{ asset('images/403.svg') }}" alt="403 Image">
-        <button class="return-button">Return to Admin</button>
-    </div>
-
-    {{-- Optional: Load scripts if needed --}}
-    {{-- <script src="{{ asset('js/custom.js') }}"></script> --}}
->>>>>>> origin/master
 </body>
 </html>

@@ -25,15 +25,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'is_admin']], functi
     
     Route::prefix('/users')->group(function () {
         Route::get('/', [AdminController::class, 'users'])->name('userindex');
-<<<<<<< HEAD
           });
-=======
-        Route::get('/fetch', [AdminController::class, 'fetchUsers'])->name('admin.fetchUsers');
-        Route::get('/{id}/edit', [AdminController::class, 'fetchSingleUser'])->name('admin.fetchSingleUser');
-        Route::delete('/{id}/delete', [AdminController::class, 'deleteUser'])->name('admin.deleteUser');
-        Route::get('/export/excel', [SpreadsheetController::class, 'exportUsersToExcel'])->name('admin.exportUsersToExcel');
-    });
->>>>>>> origin/master
 });
 
 // Customer Routes
@@ -50,12 +42,7 @@ Route::group(['prefix' => 'auth', 'middleware' => 'guest'], function() {
    
 });
 
-<<<<<<< HEAD
     
-=======
-Route::post('/check-email', [AuthController::class, 'checkEmail'])->name('check-email');
-
->>>>>>> origin/master
 // Error Routes
 Route::get('/404', [ErrorController::class, 'error404'])->name('error.404');
 Route::get('/403', [ErrorController::class, 'error403'])->name('error.403');
