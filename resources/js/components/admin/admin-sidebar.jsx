@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import "../../css/admin-sidebar.css";
-import { SidebarData } from "../../js/components/SidebarData";
+import '@css/admin-sidebar.css'; // Use the alias for the CSS import
+import { SidebarData } from "../SidebarData";
 import IconButton from '@mui/material/IconButton';
 import ToggleOffRoundedIcon from '@mui/icons-material/ToggleOffRounded';
 import ToggleOnRoundedIcon from '@mui/icons-material/ToggleOnRounded';

@@ -29,8 +29,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'is_admin']], functi
 
 // Customer Routes
 Route::group(['prefix' => 'customer', 'middleware' => ['auth', 'is_customer']], function() {
-    Route::get('/dashboard', [CustomerController::class, 'dashboard'])->name('customer.menu.dashboard');
-    // Add other routes specific to customers here...
+    Route::get('/dashboard', [CustomerController::class, 'showDashboard'])->name('customer.menu.dashboard');
+    Route::get('/cart', [CartController::class, 'show'])->name('customer.cart.show');
+
+
 });
 
 // Auth Routes
