@@ -54,10 +54,8 @@ jQuery(document).ready(function($) {
                         }, 2000);
                     } else if (response.status === 'inactive') {
                         showPopupMessage('warning', 'Your account is inactive. Please contact the administrator.');
-                    } else if (response.status === 'invalid') {
-                        showPopupMessage('error', 'Invalid credentials. Please try again.');
                     } else {
-                        showPopupMessage('error', 'An error occurred. Please try again.');
+                        showPopupMessage('error', 'Invalid credentials. Please try again.');
                     }
                 },
                 error: function(xhr) {

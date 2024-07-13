@@ -4,7 +4,7 @@
     background-color: white;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end; /* Align contents to the right */
     align-items: center;
     padding: 0.5rem 2rem;
     position: sticky;
@@ -21,19 +21,9 @@
 
 .header-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end; /* Align contents to the right */
     align-items: center;
     width: 100%;
-}
-
-.header .logo {
-    height: 40px;
-    width: auto;
-    transition: transform 0.4s ease;
-}
-
-.header .logo:hover {
-    transform: scale(1.05);
 }
 
 .profile-section {
@@ -83,7 +73,7 @@
 .profile-dropdown {
     position: absolute;
     top: 60px;
-    right: 14rem;
+    right: 2rem;
     background-color: white;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     list-style: none;
@@ -96,6 +86,7 @@
     visibility: hidden;
     transform: translateY(-10px);
     transition: all 0.4s ease;
+    left: -8rem;
 }
 
 .profile-dropdown.visible {
@@ -175,29 +166,28 @@
     transform: scale(1.1);
 }
 
-
 .right-section {
     display: flex;
     align-items: center;
-  }
-  
-  .cart-icon-container {
+}
+
+.cart-icon-container {
     position: relative;
     margin-right: 20px;
     cursor: pointer;
-  }
-  
-  .cart-icon {
-    color: #333; /* Adjust color to match your design */
+}
+
+.cart-icon {
+    color: #333;
     font-size: 24px;
     transition: transform 0.3s ease;
-  }
-  
-  .cart-icon:hover {
+}
+
+.cart-icon:hover {
     transform: scale(1.1);
-  }
-  
-  .cart-popup {
+}
+
+.cart-popup {
     position: absolute;
     top: 100%;
     right: 0;
@@ -211,29 +201,29 @@
     visibility: hidden;
     transform: translateY(10px);
     transition: all 0.3s ease;
-  }
-  
-  .cart-icon-container:hover .cart-popup {
+}
+
+.cart-icon-container:hover .cart-popup {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
-  }
-  
-  .cart-popup-content {
+}
+
+.cart-popup-content {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-  }
-  
-  .no-products-icon {
+}
+
+.no-products-icon {
     width: 80px;
     height: 80px;
     margin-bottom: 10px;
-  }
-  
-  .cart-popup p {
+}
+
+.cart-popup p {
     color: #666;
     font-size: 14px;
     margin: 0;
-  }
+}

@@ -10,6 +10,7 @@
     transition: width 0.3s ease;
     overflow: hidden;
     font-family: 'Montserrat', sans-serif;
+    z-index: 1000; /* Ensure the sidebar is on top */
 }
 
 .Sidebar.expanded {
@@ -20,11 +21,18 @@
     width: 60px;
 }
 
+.logo {
+    width: 100px; /* Adjust as needed */
+    height: auto;
+    margin: 20px auto;
+    display: block;
+}
+
 .SidebarList {
     height: auto;
     padding: 0;
     width: 100%;
-    margin-top: 10rem;
+    margin-top: 2rem; /* Adjusted for top margin to accommodate logo */
 }
 
 .SidebarList .row {
@@ -36,27 +44,36 @@
     color: black;
     justify-content: center;
     align-items: center;
-    margin-top: 10%;
     position: relative;
     transition: background-color 0.3s ease, color 0.3s ease;
+    margin-bottom: 1rem; /* Added margin for spacing */
 }
 
 .SidebarList .row:hover {
     cursor: pointer;
+    background-color: #FF6B6B;
     color: white;
+    border-radius: 30px; /* Add curve on both ends */
 }
 
-.row #icon {
+.SidebarList .row #icon {
     flex: 30%;
     display: grid;
     place-items: center;
 }
 
-.row #title {
+.SidebarList .row #title {
     flex: 70%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.Sidebar.collapsed .SidebarList .row #title {
+    opacity: 0;
+    pointer-events: none;
 }
 
 .SidebarList #active {
@@ -68,61 +85,36 @@
     border-radius: 30px; 
 }
 
-.SidebarList #active::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: -20px;
-    width: 40px;
-    height: 100%;
-    background-color: white;
-    border-radius: 50%;
-    transform: translateX(50%);
-}
-
 .SidebarList .row::before {
-    content: '';
+    content: attr(data-tooltip); /* Add this for tooltip */
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    left: 100%;
+    margin-left: 10px;
     background-color: #FF6B6B;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s ease;
-    z-index: -1;
-    border-radius: 30px;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: translateX(-10px);
+    z-index: 1000; /* Ensure tooltip is on top */
 }
 
 .SidebarList .row:hover::before {
-    transform: scaleX(1);
-}
-
-.SidebarList .row:hover::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: -20px;
-    width: 40px;
-    height: 100%;
-    background-color: white;
-    border-radius: 50%;
-    transform: translateX(50%);
+    opacity: 1;
+    transform: translateX(0);
 }
 
 .toggle-btn {
-    position: absolute;
-    top: 20px;
-    left: calc(100% + 5px);
+    position: fixed; /* Keep button in a fixed position */
+    top: 10px; /* Adjusted for top position */
+    right: 10px; /* Adjusted for right position */
     background-color: #ff2c2c;
     color: white;
     border: none;
-    padding: 5px 10px;
+    padding: 10px 20px;
     cursor: pointer;
-    z-index: 1000;
-}
-
-.Sidebar.collapsed .toggle-btn {
-    left: calc(100% - 5px);
+    z-index: 1001; /* Ensure the toggle button is on top */
+    font-size: 24px; /* Make the button larger */
 }

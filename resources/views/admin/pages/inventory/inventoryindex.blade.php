@@ -2,7 +2,6 @@
 
 @section('content')
 <div id="order-content">
-    <h1 class="centered-header">Product Inventory Dashboard</h1>
     <div id="message"></div>
     <div class="container">
         <div class="card">

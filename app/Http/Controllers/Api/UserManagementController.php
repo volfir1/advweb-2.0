@@ -17,7 +17,7 @@ class UserManagementController extends Controller
     {
         $query = User::leftJoin('customers', 'users.id', '=', 'customers.user_id')
             ->select('users.*', 'customers.fname', 'customers.lname', 'customers.contact', 'customers.address');
-    
+        
         if ($request->has('search')) {
             $searchValue = $request->input('search');
             $query->where(function($q) use ($searchValue) {
@@ -35,15 +35,14 @@ class UserManagementController extends Controller
                        ->take($request->input('length'))
                        ->get();
     
-        // Map and format the response with correct role values
         $formattedUsers = $users->map(function($user) {
             return [
                 'id' => $user->id,
-                'profile_image' => $user->profile_image,
+                'profile_image' => $user->profile_image ? asset('storage/' . $user->profile_image) : null,
                 'name' => $user->name,
                 'email' => $user->email,
                 'active_status' => $user->active_status,
-                'role' => $user->role, // Convert boolean role to 1 or 0
+                'role' => $user->role,
                 'fname' => $user->fname,
                 'lname' => $user->lname,
                 'contact' => $user->contact,
@@ -55,10 +54,9 @@ class UserManagementController extends Controller
             'draw' => $request->input('draw'),
             'recordsTotal' => $totalRecords,
             'recordsFiltered' => $filteredRecords,
-            'data' => $formattedUsers, // Return formatted user data with role
+            'data' => $formattedUsers,
         ]);
     }
-    
 
     public function getEditUserData($id)
     {
@@ -73,10 +71,8 @@ class UserManagementController extends Controller
                 'email' => $user->email,
                 'contact' => $user->customer->contact,
                 'address' => $user->customer->address,
-                'active_status' => $user->active_status ? 1 : 0,
-                'role'=>$user->role ? 1:0,
-                'profile_image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-
+                'active_status' => $user->active_status,
+                'role' => $user->role,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -90,21 +86,12 @@ class UserManagementController extends Controller
 
     public function updateUserData(Request $request)
 {
+    // Add logging to capture the input request
+    \Log::info('Update User Data Request: ', $request->all());
+
     $request->validate([
-        'name' => 'string|max:255',
-        'first_name' => 'string|max:255',
-        'last_name' => 'string|max:255',
-        'email' => [
-            'string',
-            'email',
-            'max:255',
-            Rule::unique('users')->ignore($request->id),
-        ],
-        'contact' => 'string|max:20',
-        'address' => 'string|max:255',
         'active_status' => 'required|in:1,0',
-        'role' => 'required|in:1,0',
-        
+        'role' => 'required|in:admin,customer',
     ]);
 
     DB::beginTransaction();
@@ -113,24 +100,10 @@ class UserManagementController extends Controller
         $user = User::findOrFail($request->id);
 
         // Update user data
-        $user->name = $request->name;
-        $user->email = $request->email;
         $user->active_status = $request->active_status == 1 ? 1 : 0;
-
-        // Update password if provided
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
-        }
+        $user->role = $request->role;
 
         $user->save();
-
-        // Update related customer data
-        $customer = $user->customer;
-        $customer->fname = $request->first_name;
-        $customer->lname = $request->last_name;
-        $customer->contact = $request->contact;
-        $customer->address = $request->address;
-        $user->customer()->save($customer);
 
         DB::commit();
 
@@ -139,6 +112,8 @@ class UserManagementController extends Controller
         ]);
     } catch (\Exception $e) {
         DB::rollBack();
+        // Log the error details
+        \Log::error('Error updating user data: ', ['error' => $e->getMessage()]);
         return response()->json([
             'error' => [
                 'message' => 'An error occurred while updating the user.',
@@ -148,57 +123,8 @@ class UserManagementController extends Controller
     }
 }
 
-public function saveUser(Request $request)
-{
-    // Validate the request data
-    $validator = Validator::make($request->all(), [
-        'role' => 'required|in:1,0',
-        'active_status' => 'required|in:1,0',
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json(['errors' => $validator->errors()], 422);
-    }
-
-    // Check if it's an update or create request
-    $user = $request->id ? User::find($request->id) : new User();
-
-    // Update the user data if provided
-    if ($request->has('name')) {
-        $user->name = $request->name;
-    }
-
-    if ($request->has('email')) {
-        $user->email = $request->email;
-    }
-
-    $user->active_status = $request->active_status ? 1 : 0;
-    $user->role = $request->role; // Ensure role assignment
-
-    // Save the user
-    $user->save();
-
-    // Save or update the related customer data if provided
-    if ($request->has('first_name')) {
-        $customer = $user->customer ?: new Customer();
-        $customer->user_id = $user->id;
-        $customer->fname = $request->first_name;
-        $customer->lname = $request->last_name;
-        $customer->contact = $request->contact;
-        $customer->address = $request->address;
-
-        // Save the customer
-        $customer->save();
-    }
-
-    // Return a success response
-    return response()->json(['success' => 'User saved successfully!']);
-}
-
-
-
-
-
+    
+    
     public function deleteUser($id)
     {
         $user = User::findOrFail($id);
@@ -206,9 +132,6 @@ public function saveUser(Request $request)
         DB::beginTransaction();
 
         try {
-            // Delete related records if necessary
-            // Example: $user->profile()->delete();
-
             $user->delete();
 
             DB::commit();
@@ -229,7 +152,6 @@ public function saveUser(Request $request)
 
     public function storeUser(Request $request)
     {
-        // Validate the request data
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'first_name' => 'required|string|max:255',
@@ -246,38 +168,46 @@ public function saveUser(Request $request)
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Check if it's an update or create request
-        $user = $request->id ? User::find($request->id) : new User();
+        DB::beginTransaction();
 
-        // Update the user data
-        $user->name = $request->name;
-        $user->email = $request->email;
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
+        try {
+            $user = $request->id ? User::find($request->id) : new User();
+
+            // Update the user data
+            $user->name = $request->name;
+            $user->email = $request->email;
+            if ($request->filled('password')) {
+                $user->password = Hash::make($request->password);
+            }
+            $user->active_status = $request->active_status ? 1 : 0;
+            if ($request->hasFile('profile_image')) {
+                $profileImage = $request->file('profile_image');
+                $profileImagePath = $profileImage->store('profile_images', 'public');
+                $user->profile_image = $profileImagePath;
+            }
+
+            $user->save();
+
+            $customer = $user->customer ?: new Customer();
+            $customer->user_id = $user->id;
+            $customer->fname = $request->first_name;
+            $customer->lname = $request->last_name;
+            $customer->contact = $request->contact;
+            $customer->address = $request->address;
+
+            $customer->save();
+
+            DB::commit();
+
+            return response()->json(['success' => 'User saved successfully!']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'error' => [
+                    'message' => 'An error occurred while saving the user.',
+                    'details' => $e->getMessage()
+                ]
+            ], 500);
         }
-        $user->active_status = $request->active_status ? 1 : 0;
-        if ($request->hasFile('profile_image')) {
-            $profileImage = $request->file('profile_image');
-            $profileImagePath = $profileImage->store('profile_images', 'public');
-            $user->profile_image = $profileImagePath;
-        }
-
-        // Save the user
-        $user->save();
-
-        // Save or update the related customer data
-        $customer = $user->customer ?: new Customer();
-        $customer->user_id = $user->id;
-        $customer->fname = $request->first_name;
-        $customer->lname = $request->last_name;
-        $customer->contact = $request->contact;
-        $customer->address = $request->address;
-
-        // Save the customer
-        $customer->save();
-
-        // Return a response
-        return response()->json(['success' => 'User saved successfully!']);
     }
 }
-

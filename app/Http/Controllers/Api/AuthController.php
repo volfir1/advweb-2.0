@@ -78,40 +78,35 @@ class AuthController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function authenticate(Request $request)
-    {
-        try {
-            $credentials = $request->validate([
-                'name' => ['required', 'string'],
-                'password' => ['required', 'string'],
-            ]);
-    
-            if (Auth::attempt($credentials)) {
-                $request->session()->regenerate();
-    
-                // Create a Sanctum token
-                $token = Auth::user()->createToken('auth_token')->plainTextToken;
-    
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Login successful',
-                    'redirect' => Auth::user()->role === 'admin' ? route('admin.index') : route('customer.menu.dashboard'),
-                    'token' => $token,
-                ]);
-            }
-    
-            return response()->json([
-                'success' => false,
-                'message' => 'The provided credentials do not match our records.',
-            ], 401);
-        } catch (\Exception $e) {
-            \Log::error('Authentication error: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'An error occurred during authentication.',
-            ], 500);
+   // AuthController.php
+   public function authenticate(Request $request)
+{
+    $credentials = $request->only('name', 'password');
+
+    if (Auth::attempt($credentials)) {
+        $user = Auth::user();
+        if (!$user->active_status) {
+            Auth::logout();
+            return response()->json(['status' => 'inactive', 'message' => 'Your account is inactive. Please contact the administrator.'], 403);
         }
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Login successful',
+            'redirect' => $user->role === 'admin' ? route('admin.index') : route('customer.menu.dashboard'),
+            'token' => $token,
+        ]);
     }
+
+    return response()->json([
+        'success' => false,
+        'message' => 'The provided credentials do not match our records.',
+    ], 401);
+}
+
+
 
     /**
      * Log the user out (revoke the token).
@@ -137,17 +132,18 @@ class AuthController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getUserProfile(Request $request)
-    {
-        $user = $request->user();
+   public function getUserProfile(Request $request)
+{
+    $user = $request->user();
     
-        return response()->json([
-            'name' => $user->name,
-            'email' => $user->email,
-            'role' => $user->role,
-            // Add other profile information as needed
-        ]);
-    }
+    return response()->json([
+        'name' => $user->name,
+        'email' => $user->email,
+        'role' => $user->role,
+        'profile_image' => $user->profile_image, // Add profile_image to the response
+    ]);
+}
+
 
     /**
      * Show the registration form.

@@ -17,11 +17,8 @@
 
   <!-- Custom CSS Files -->
   <link rel="stylesheet" href="{{ asset('css/orderindex.css') }}">
-  <link rel="stylesheet" href="{{ asset('css/inventoryindex.css') }}">
-<<<<<<< HEAD
+  <link rel="stylesheet" href="{{ asset('css/user-management.css') }}">
   <link rel="stylesheet" href="{{ asset('..css/error403.scss') }}">
-=======
->>>>>>> origin/master
 
   <!-- React and Vite -->
   @viteReactRefresh
@@ -55,12 +52,10 @@
   <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
   <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 
-<<<<<<< HEAD
   
   <script src="{{ asset('js/error403.js') }}"></script>
+  <script src="{{ asset('js/admin/user-management.js') }}"></script>
 
-=======
->>>>>>> origin/master
   <!-- Include pushed scripts -->
   @stack('scripts')
 
@@ -72,8 +67,4 @@
     });
   </script>
 </body>
-<<<<<<< HEAD
 </html>
-=======
-</html>
->>>>>>> origin/master

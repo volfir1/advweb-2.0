@@ -86,10 +86,10 @@ class SpreadSheetController extends Controller
     public function exportUsers()
     {
         $users = User::all();
-
+    
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
-
+    
         // Set up the header row
         $sheet->setCellValue('A1', 'ID');
         $sheet->setCellValue('B1', 'First Name');
@@ -99,7 +99,7 @@ class SpreadSheetController extends Controller
         $sheet->setCellValue('F1', 'Active Status');
         $sheet->setCellValue('G1', 'Contact');
         $sheet->setCellValue('H1', 'Address');
-
+    
         // Populate the data
         $row = 2;
         foreach ($users as $user) {
@@ -113,18 +113,21 @@ class SpreadSheetController extends Controller
             $sheet->setCellValue('H' . $row, $user->address);
             $row++;
         }
-
+    
         // Create the Excel file
         $writer = new Xlsx($spreadsheet);
         $filename = 'users_export_' . date('Y-m-d_H-i-s') . '.xlsx';
-
+    
         // Create a temporary file
         $temp_file = tempnam(sys_get_temp_dir(), 'users_export');
         $writer->save($temp_file);
-
+    
         // Return the file as a download
         return response()->download($temp_file, $filename, [
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         ])->deleteFileAfterSend(true);
     }
+    
+    
+    
 }

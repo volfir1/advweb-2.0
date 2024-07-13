@@ -4,8 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Http\Request;
 
 class IsAdmin
 {
@@ -27,7 +25,4 @@ class IsAdmin
 
         return $next($request);
     }
-    }
-    
-    
-
+}

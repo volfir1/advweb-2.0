@@ -49,15 +49,7 @@ function Header({ user }) {
     if (!user || !user.profile_image) {
       return 'https://via.placeholder.com/40'; // Placeholder image URL
     }
-    try {
-      const imageUrl = user.profile_image.startsWith('http')
-        ? user.profile_image
-        : `/storage/profile_images/${user.profile_image}`;
-      return imageUrl;
-    } catch (error) {
-      console.error('Error getting image source:', error);
-      return 'https://via.placeholder.com/40'; // Placeholder image URL
-    }
+    return `/storage/${user.profile_image}`; // Correct path to storage directory
   };
 
   useEffect(() => {
@@ -75,7 +67,6 @@ function Header({ user }) {
   return (
     <header className="header">
       <div className="header-content">
-        <img src="../logos/baketogo.jpg" alt="Company Logo" className="logo" />
         {user.role === 'customer' && (
           <div className="search-bar">
             <input type="text" placeholder="Search..." className="search-input" />

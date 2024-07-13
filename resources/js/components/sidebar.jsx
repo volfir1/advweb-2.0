@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import "../../css/admin-sidebar.css";
 import { SidebarData } from "../../js/components/SidebarData";
+import IconButton from '@mui/material/IconButton';
+import ToggleOffRoundedIcon from '@mui/icons-material/ToggleOffRounded';
+import ToggleOnRoundedIcon from '@mui/icons-material/ToggleOnRounded';
 
 function Sidebar() {
     const [isExpanded, setIsExpanded] = useState(true);
@@ -11,9 +14,10 @@ function Sidebar() {
 
     return (
         <div className={`Sidebar ${isExpanded ? "expanded" : "collapsed"}`}>
-            <button className="toggle-btn" onClick={toggleSidebar}>
-                {isExpanded ? "<<" : ">>"}
-            </button>
+            <IconButton className="toggle-btn" onClick={toggleSidebar}>
+                {isExpanded ? <ToggleOffRoundedIcon /> : <ToggleOnRoundedIcon />}
+            </IconButton>
+            <img src="../logos/baketogo.jpg" alt="Company Logo" className="logo" />
             <ul className="SidebarList">
                 {SidebarData.map((val, key) => {
                     return (
@@ -24,9 +28,10 @@ function Sidebar() {
                             onClick={() => {
                                 window.location.pathname = val.link; 
                             }}
+                            data-tooltip={val.title} // Add tooltip text here
                         >
                             <div id="icon">{val.icon}</div>
-                            <div id="title">{val.title}</div>
+                            <div id="title" className={`tooltip ${isExpanded ? "" : "tooltip-hidden"}`}>{val.title}</div>
                         </li>
                     );
                 })}

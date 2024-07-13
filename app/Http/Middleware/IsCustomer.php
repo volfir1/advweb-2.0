@@ -4,8 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class IsCustomer
 {
@@ -21,11 +19,10 @@ class IsCustomer
         }
 
         // Check if the authenticated user's role is customer
-        if (Auth::user()->role === 'customer') {
-            return $next($request);
+        if (Auth::user()->role !== 'customer') {
+            return redirect('/403')->with('error', 'You do not have access to this page.');
         }
 
-        // If the user is not a customer, redirect to the 403 page
-        return redirect('/403')->with('error', 'You do not have access to this page.');
+        return $next($request);
     }
 }
